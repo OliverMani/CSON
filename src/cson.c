@@ -102,6 +102,7 @@ int cson_set_object(CSON* cson, char* key, CSON* value) {
             } else {
                 prev->right_node = current;
             }
+            break;
         } else if(!current) {
             cson->data.object = __create_object(NULL, NULL, new_key, value);
             break;
@@ -118,11 +119,13 @@ int cson_set_object(CSON* cson, char* key, CSON* value) {
             }
             break;
         } else if (compare < 0) {
+            prev = current;
             current = current->left_node;
         } else if (compare > 0) {
+            prev = current;
             current = current->right_node;
         }
-        prev = current;
+        
     }
 
     return 0;
@@ -417,17 +420,69 @@ void __pretty_print_rec(CSON* cson, int tabs) {
             else
                 printf("false");
             break;
+        default:
+            printf("null");
+            break;
             
     }
 }
 
 void cson_pretty_print(CSON* cson) {
+    if(!cson)
+        printf("null\n");
     __pretty_print_rec(cson, 0);
+}
+
+int cson_array_set(CSON* cson, uint32_t index, CSON* value) {
+    if(!cson)
+        return 1;
+    struct __cson_array* current = cson->data.array;
+    if(!current)
+        return 1;
+    while(current && current->index != index)
+        current = current->next;
+    if(!current)
+        return 1;
+    if(current->value != value) {
+        cson_free(current->value);
+        current->value = value;
+    }
+    return 0;
+}
+
+int __object_length(struct __cson_object* obj) {
+    if(!obj)
+        return 0;
+    return 1 + __object_length(obj->left_node) + __object_length(obj->right_node);
+}
+
+int cson_length(CSON* cson) {
+    if(!cson)
+        return -1;
+    switch (cson->type)
+    {
+    case OBJECT:
+        return __object_length(cson->data.object);
+    case ARRAY:
+        if(!cson->data.array)
+            return 0;
+        return cson->data.array->index + 1;
+    case STRING:
+        if(!cson->data.str)
+            return 0;
+        return strlen(cson->data.str->string);
+    default:
+        return -1;
+    }
+}
+
+int cson_array_free(CSON* cson, uint32_t index) {
+    if(!cson || index < 0 || !cson->data.array || index > cson->data.array->index)
+        return 1;
+    
+    return 0;
 }
 
 // Later on
 CSON* cson_free_object(CSON* cson, char* key);
-int cson_array_set(CSON* cson, uint32_t index, CSON* value);
-int cson_array_free(CSON* cson, uint32_t index);
-int cson_length(CSON* cson);
 CSON* cson_clone(CSON* cson);

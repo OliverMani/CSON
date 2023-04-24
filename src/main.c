@@ -29,10 +29,13 @@ int main() {
     //json_set_object(json, "AnotherObj", json2);
     cson_array_append(array, json2);
     cson_pretty_print(json);
-    printf("\n\n\n");
-    cson_free(json);
-    
-    
-    cson_pretty_print(json);
+    printf("\n\n\nget Hello: ");
+    CSON* get = cson_get_object(json, "Hello");
+    cson_pretty_print(get);
+    printf("\n\n\nget get 1: ");
+    CSON* indextest = cson_array_get(get, 10); // Epli
+    cson_pretty_print(indextest);
+    printf("\n");
+
     //json_pretty_print(json2);
 }
