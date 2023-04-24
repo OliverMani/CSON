@@ -559,5 +559,79 @@ int cson_free_object(CSON* cson, char* key) {
     return 0;
 }
 
-// Later on
-CSON* cson_clone(CSON* cson);
+struct __cson_object* __object_clone(struct __cson_object* object) {
+    if(!object) return NULL;
+    struct __cson_object* clone = (struct __cson_object*) malloc(sizeof(struct __cson_object));
+    clone->key = (char*) malloc(strlen(object->key) + 1);
+    strcpy(clone->key, object->key);
+    clone->value = cson_clone(object->value);
+    clone->left_node = __object_clone(object->left_node);
+    clone->right_node = __object_clone(object->right_node);
+    return clone;
+}
+
+struct __cson_array* __array_clone(struct __cson_array* array) {
+    if(!array) return NULL;
+    struct __cson_array* clone = (struct __cson_array*) malloc(sizeof(struct __cson_array));
+    clone->index = array->index;
+    clone->value = cson_clone(array->value);
+    clone->next = __array_clone(array->next);
+    return clone;
+}
+
+/*
+    Clones an CSON object
+*/
+CSON* cson_clone(CSON* cson) {
+    CSON* clone = (CSON*) malloc(sizeof(CSON));
+    clone->type = cson->type;
+    switch(cson->type) {
+        case BOOLEAN:
+            if(!cson->data.bool)
+                clone->data.bool = NULL;
+            else {
+                clone->data.bool = (struct __cson_boolean*) malloc(sizeof(struct __cson_boolean));
+                clone->data.bool->bool = cson->data.bool->bool;
+            }
+            break;
+        case INT:
+            if(!cson->data.i)
+                clone->data.i = NULL;
+            else {
+                clone->data.i = (struct __cson_int*) malloc(sizeof(struct __cson_int));
+                clone->data.i->i = cson->data.i->i;
+            }
+            break;
+        case STRING:
+            if(!cson->data.str)
+                clone->data.str = NULL;
+            else {
+                char* string = cson->data.str->string;
+                clone->data.str = (struct __cson_string*) malloc(sizeof(struct __cson_string));
+                if(!string)
+                    clone->data.str->string = NULL;
+                else {
+                    clone->data.str->string = (char*) malloc(strlen(string) + 1);
+                    strcpy(clone->data.str->string, string);
+                }
+            }
+            break;
+        case OBJECT:
+            if(!cson->data.object)
+                clone->data.object = NULL;
+            else {
+                struct __cson_object* object = cson->data.object;
+                clone->data.object = __object_clone(object);
+            }
+            break;
+        case ARRAY:
+            if(!cson->data.array)
+                clone->data.array = NULL;
+            else {
+                struct __cson_array* array = cson->data.array;
+                clone->data.array = __array_clone(array);
+            }
+            break;
+    }
+    return clone;
+}
