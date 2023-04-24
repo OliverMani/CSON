@@ -98,9 +98,9 @@ int cson_set_object(CSON* cson, char* key, CSON* value) {
         if(!current && prev) {
             current = __create_object(NULL, NULL, new_key, value);
             if(strcmp(prev->key, current->key) < 0) {
-                prev->left_node = current;
-            } else {
                 prev->right_node = current;
+            } else {
+                prev->left_node = current;
             }
             break;
         } else if(!current) {
@@ -487,10 +487,77 @@ int cson_array_free(CSON* cson, uint32_t index) {
         current = current->next;
     }
     prev->next = current->next;
-    cson_free(current);
+    cson_free(current->value);
+    free(current);
+    return 0;
+}
+
+int cson_free_object(CSON* cson, char* key) {
+    if(!cson || !cson->data.object)
+        return 1;
+    struct __cson_object* current = cson->data.object;
+    struct __cson_object* parent = current;
+    int compare;
+
+    while(current) {
+        parent = current;
+        compare = strcmp(key, current->key);
+        if(compare < 0)
+            current = current->left_node;
+        else if(compare > 0)
+            current = current->right_node;
+        else break;
+    }
+    if(!current)
+        return 1;
+    if(!current->left_node && !current->right_node) {
+        if(current == cson->data.object) {
+            cson->data.object = NULL;
+        } else {
+            if(current == parent->left_node)
+                parent->left_node = NULL;
+            else
+                parent->right_node = NULL;
+        }
+        cson_free(current->value);
+        free(current);
+    } else if(!current->left_node) {
+        struct __cson_object* right = current->right_node;
+        cson_free(current->value);
+        current->value = right->value;
+        current->left_node = right->left_node;
+        current->right_node = right->right_node;
+        
+        free(current->key);
+        current->key = right->key;
+        free(right);
+    } else if(!current->right_node) {
+        struct __cson_object* left = current->left_node;
+        cson_free(current->value);
+        current->value = left->value;
+        current->left_node = left->left_node;
+        current->right_node = left->right_node;
+        
+        free(current->key);
+        current->key = left->key;
+        free(left);
+    } else { // If object tree has subtrees on both sides
+        struct __cson_object* temp = current->right_node;
+        struct __cson_object* tempParent = current;
+        free(temp->key);
+        cson_free(temp->value);
+        while(temp->left_node) {
+            tempParent = temp;
+            temp = temp->left_node;
+            tempParent->key = temp->key;
+            tempParent->value = temp->value;
+        }
+        free(tempParent->left_node);
+        tempParent->left_node = NULL;
+
+    }
     return 0;
 }
 
 // Later on
-CSON* cson_free_object(CSON* cson, char* key);
 CSON* cson_clone(CSON* cson);
