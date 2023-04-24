@@ -479,7 +479,15 @@ int cson_length(CSON* cson) {
 int cson_array_free(CSON* cson, uint32_t index) {
     if(!cson || index < 0 || !cson->data.array || index > cson->data.array->index)
         return 1;
-    
+    struct __cson_array* current = cson->data.array;
+    struct __cson_array* prev = current;
+    while(current->index != index) {
+        current->index--;
+        prev = current;
+        current = current->next;
+    }
+    prev->next = current->next;
+    cson_free(current);
     return 0;
 }
 
