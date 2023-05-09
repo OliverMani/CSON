@@ -13,7 +13,7 @@
 7. And finally, do whatever you want with this code/library I coded :)
 #### CSON library
 When using the library, you should be able to include the files with `#include <cson/[file.h]>`. The files you should be able to import are:
-    - `#include <cson/cson.h>` - The core library
-    - `#include <cson/io.h>` - IO, read and write files (!!!NOT READY!!!)
-    - `#include <cson/structures.h>` - Structs that the libary uses, not included unless you want to create extensions for CSON
-    - `#include <cson/validator.h>` - Can check if JSON is valid or not
+- `#include <cson/cson.h>` - The core library
+- `#include <cson/io.h>` - IO, read and write files (!!!NOT READY!!!)
+- `#include <cson/structures.h>` - Structs that the libary uses, not included unless you want to create extensions for CSON
+- `#include <cson/validator.h>` - Can check if JSON is valid or not
