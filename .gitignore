@@ -1,1 +1,11 @@
-Merged gitignore
+.vscode/
+CMakeCache.txt
+CMakeFiles/
+*.o
+test
+myexecutable
+test.c
+cmake_install.cmake
+build/
+Makefile
+*.so
