@@ -15,7 +15,8 @@ enum Type {
     INT,
     ARRAY,
     OBJECT,
-    NONE
+    NONE,
+    WHITESPACE // Useful for compiler
 };
 
 union __cson_value {
@@ -56,6 +57,7 @@ struct __cson_string {
     char* string;
 };
 
-
+enum Type cson_get_unpacked_type(char ch);
+static inline char cson_is_whitespace(char ch);
 
 #endif

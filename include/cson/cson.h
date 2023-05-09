@@ -32,7 +32,7 @@ int64_t cson_get_object_as_int(CSON* cson, char* key);
 char cson_get_object_as_boolean(CSON* cson, char* key);
 
 CSON* cson_get_object(CSON* cson, char* key);
-CSON* cson_free_object(CSON* cson, char* key);
+int cson_free_object(CSON* cson, char* key);
 
 
 
@@ -59,9 +59,9 @@ int cson_free(CSON* cson);
 
 void cson_pretty_print(CSON* cson);
 
-// Left to do
-int cson_length(CSON* cson);
 
+int cson_length(CSON* cson);
+// Left to do
 CSON* cson_clone(CSON* cson);
 
 #endif
