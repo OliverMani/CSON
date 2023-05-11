@@ -91,9 +91,9 @@ def generate_readme(filename, objects):
     readme = f'#### #include <cson/{filename}>\n'
     for obj in objects:
         if type(obj) == Function:
-            readme += f'- ```C\n\t{obj.kind} {obj.name} ({obj.args})\n\t```'
+            readme += f'- `{obj.kind} {obj.name} ({obj.args})`'
         else:
-            readme += f'- ```C\n\t{obj.kind} {obj.name}\n\t```'
+            readme += f'- `{obj.kind} {obj.name}`'
         if obj.documentation != '':
             joined = "\n   ".join(obj.documentation.split("\n"))
             readme += f'\n - {joined}\n'
