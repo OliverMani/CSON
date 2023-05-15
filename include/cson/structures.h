@@ -56,8 +56,14 @@ struct __cson_boolean {
 struct __cson_string {
     char* string;
 };
-
+/**
+ * Used by library, figures out a type by char
+*/
 enum Type cson_get_unpacked_type(char ch);
+
+/**
+ * Used by library, check if char is a whitespace
+*/
 static inline char cson_is_whitespace(char ch);
 
 #endif
