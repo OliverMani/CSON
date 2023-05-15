@@ -1,4 +1,5 @@
 # This is a helper to update README.md
+# This script reads all the header files in "include" directory and generates a good documentation about the library based on the comments of the header files
 
 from sys import argv
 import os
@@ -91,22 +92,23 @@ def leftfix(string, length):
     return string + (' ' * (length - len(string)))
 
 def generate_readme(filename, objects):
-    length = 100
+    length1 = 100
+    length2 = 1000
     readme = f'#### #include <cson/{filename}>\n'
-    readme += f'| {leftfix("Function or type", length)} | {leftfix("Info",length)} |\n'
-    readme += f'|:{"-"*length}-|:{"-"*length}-|\n'
+    readme += f'| {leftfix("Function or type", length1)} | {leftfix("Info",length2)} |\n'
+    readme += f'|:{"-"*length1}-|:{"-"*length2}-|\n'
     for obj in objects:
         if type(obj) == Function:
-            #readme += f'```C\n\t{obj.kind} {obj.name} ({obj.args})\n\t```'
             tmpfunc = f'`{obj.kind} {obj.name} ({obj.args})`'
-            readme += f'| {leftfix(tmpfunc, length)} |'
+            readme += f'| {leftfix(tmpfunc, length1)} '
         else:
-            readme += f'| {leftfix(obj.kind, length)} {leftfix(obj.name, length)}'
+            tmpobj = f'{obj.kind} {obj.name}'
+            readme += f'| `{leftfix(tmpobj, length1)}`'
         if obj.documentation != '':
-            #joined = "\n   ".join(n.split("\n"))
-            readme += f'```{leftfix(obj.documentation, length)}``` |\n'
+            joined = "<br />".join(obj.documentation.split("\n"))
+            readme += f'| {leftfix(joined, length2)} |\n'
         else:
-            readme += f'| {leftfix(" " * length)} |\n'
+            readme += f'| {" " * length2} |\n'
     return readme
 
 def main(args):
