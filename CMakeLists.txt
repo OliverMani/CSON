@@ -10,7 +10,7 @@ include_directories(include)
 
 # To make "make docs" work, it should run a python script to generate README.md
 add_custom_target(docs
-    COMMAND python3 "make_docs.py" #"${CMAKE_SOURCE_DIR}/script2"
+    COMMAND python3 "make_docs.py"
     WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/scripts"
     COMMENT "Generating documentation"
 )
