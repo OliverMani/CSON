@@ -57,7 +57,7 @@ def parse_line(line, documentation):
             if key == 'typedef':
                 return Thing(match.group(1), match.group(2), documentation)
             if key == 'enum':
-                print("ENUM:", match.group(0))
+                #print("ENUM:", match.group(0))
                 return Thing('enum', match.group(2), documentation)
     return None
 
@@ -91,9 +91,9 @@ def generate_readme(filename, objects):
     readme = f'#### #include <cson/{filename}>\n'
     for obj in objects:
         if type(obj) == Function:
-            readme += f'- `{obj.kind} {obj.name} ({obj.args})`'
+            readme += f'```C\n\t{obj.kind} {obj.name} ({obj.args})\n\t```'
         else:
-            readme += f'- `{obj.kind} {obj.name}`'
+            readme += f'```C\n\t{obj.kind} {obj.name}\n\t```'
         if obj.documentation != '':
             joined = "\n   ".join(obj.documentation.split("\n"))
             readme += f'\n - {joined}\n'
@@ -102,15 +102,16 @@ def generate_readme(filename, objects):
     return readme
 
 def main(args):
-    print(HARD_CODED_DOCUMENTATION)
+    #print(HARD_CODED_DOCUMENTATION)
     for dirpath, dirnames, filenames in os.walk(__INCLUDE__):
         for filename in filenames:
             path = os.path.join(dirpath, filename)
             with open(path, 'r') as file:
                 code = file.read()
                 objects = parse_header_file(code)
-                print(generate_readme(filename, objects))
-                print()
+                #print(generate_readme(filename, objects))
+                #print()
+    print("Successfully generated docs!")
 
 if __name__ == '__main__':
     main(argv[1:])
