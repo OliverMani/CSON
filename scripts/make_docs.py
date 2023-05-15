@@ -102,8 +102,8 @@ def generate_readme(filename, objects):
             tmpfunc = f'`{obj.kind} {obj.name} ({obj.args})`'
             readme += f'| {leftfix(tmpfunc, length1)} '
         else:
-            tmpobj = f'{obj.kind} {obj.name}'
-            readme += f'| `{leftfix(tmpobj, length1)}`'
+            tmpobj = f'`{obj.kind} {obj.name}`'
+            readme += f'| {leftfix(tmpobj, length1)}'
         if obj.documentation != '':
             joined = "<br />".join(obj.documentation.split("\n"))
             readme += f'| {leftfix(joined, length2)} |\n'
