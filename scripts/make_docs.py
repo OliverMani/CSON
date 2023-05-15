@@ -87,30 +87,41 @@ def parse_header_file(code):
                 last_comment = ''
     return objects
 
+def leftfix(string, length):
+    return string + (' ' * (length - len(string)))
+
 def generate_readme(filename, objects):
+    length = 100
     readme = f'#### #include <cson/{filename}>\n'
+    readme += f'| {leftfix("Function or type", length)} | {leftfix("Comment",length)} |\n'
+    readme += f'|:{"-"*length}-|:{"-"*length}-|\n'
     for obj in objects:
         if type(obj) == Function:
-            readme += f'```C\n\t{obj.kind} {obj.name} ({obj.args})\n\t```'
+            #readme += f'```C\n\t{obj.kind} {obj.name} ({obj.args})\n\t```'
+            tmpfunc = f'`{obj.kind} {obj.name} ({obj.args})`'
+            readme += f'| {leftfix(tmpfunc, length)} |'
         else:
-            readme += f'```C\n\t{obj.kind} {obj.name}\n\t```'
+            readme += f'| {leftfix(obj.kind, length)} {leftfix(obj.name, length)}'
         if obj.documentation != '':
-            joined = "\n   ".join(obj.documentation.split("\n"))
-            readme += f'\n - {joined}\n'
+            #joined = "\n   ".join(n.split("\n"))
+            readme += f'\n - {leftfix(obj.documentation, length)} |\n'
         else:
             readme += '\n'
     return readme
 
 def main(args):
     #print(HARD_CODED_DOCUMENTATION)
-    for dirpath, dirnames, filenames in os.walk(__INCLUDE__):
-        for filename in filenames:
-            path = os.path.join(dirpath, filename)
-            with open(path, 'r') as file:
-                code = file.read()
-                objects = parse_header_file(code)
-                #print(generate_readme(filename, objects))
-                #print()
+    with open(__README__, 'w') as write:
+        write.write(HARD_CODED_DOCUMENTATION)
+        for dirpath, dirnames, filenames in os.walk(__INCLUDE__):
+            for filename in filenames:
+                path = os.path.join(dirpath, filename)
+                with open(path, 'r') as file:
+                    code = file.read()
+                    objects = parse_header_file(code)
+                    write.write(generate_readme(filename, objects))
+                    #print(generate_readme(filename, objects))
+                    #print()
     print("Successfully generated docs!")
 
 if __name__ == '__main__':
