@@ -93,7 +93,7 @@ def leftfix(string, length):
 def generate_readme(filename, objects):
     length = 100
     readme = f'#### #include <cson/{filename}>\n'
-    readme += f'| {leftfix("Function or type", length)} | {leftfix("Comment",length)} |\n'
+    readme += f'| {leftfix("Function or type", length)} | {leftfix("Info",length)} |\n'
     readme += f'|:{"-"*length}-|:{"-"*length}-|\n'
     for obj in objects:
         if type(obj) == Function:
@@ -104,9 +104,9 @@ def generate_readme(filename, objects):
             readme += f'| {leftfix(obj.kind, length)} {leftfix(obj.name, length)}'
         if obj.documentation != '':
             #joined = "\n   ".join(n.split("\n"))
-            readme += f'\n - {leftfix(obj.documentation, length)} |\n'
+            readme += f'```{leftfix(obj.documentation, length)}``` |\n'
         else:
-            readme += '\n'
+            readme += f'| {leftfix(" " * length)} |\n'
     return readme
 
 def main(args):
